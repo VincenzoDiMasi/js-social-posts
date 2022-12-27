@@ -82,7 +82,7 @@ console.log(posts);
 
 //Prendo gli elementi dal DOM
 const targetPostList = document.getElementById('container');
-const likeButtons = document.querySelectorAll('.like-button');
+
 
 
 //# FUNZIONI
@@ -173,6 +173,9 @@ const addPosts = array => {
 //Stampo
 targetPostList.innerHTML = addPosts(posts);
 
+//Prendo il button dal DOM
+const likeButtons = document.querySelectorAll('.like-button');
+
 //Event Listener
 likeButtons.forEach( (button, i) => {
    button.addEventListener('click', () => {
@@ -185,7 +188,7 @@ likeButtons.forEach( (button, i) => {
        } else {
            posts[i].likes--; 
        }
-       
+
        const likeTarget = document.getElementById(`like-counter-${i+1}`);
        likeTarget.innerText = posts[i].likes;
    })
