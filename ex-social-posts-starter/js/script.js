@@ -82,6 +82,7 @@ console.log(posts);
 
 //Prendo gli elementi dal DOM
 const targetPostList = document.getElementById('container');
+const likeButtons = document.querySelectorAll('.like-button');
 
 
 //# FUNZIONI
@@ -95,3 +96,97 @@ const convertDate = (date) => {
     if (month < 10) month = '0' + month;
     return `${day}/${month}/${year}`
 }
+
+//Funzione per creare i post
+
+const createPost = (item) => {
+
+    //If per propic
+   let profilePicture = `<img class="profile-pic" src="${item.profilePicture}" alt="${item.name}" />`;
+   if (!item.profilePicture){
+       const nameSurname = item.name.split(' ');
+       console.table(nameSurname);
+       let initials = ''
+       nameSurname.forEach((word) => {
+           initials += word.charAt(0);
+       })
+       console.log(initials);
+       profilePicture = `<div class="profile-pic-default"><span>${initials}</span></div>`;
+   }
+
+   
+   let picture = item.picture ? `<div class="post__image">
+   <img src="${item.picture}" alt="" />
+   </div>` : '';
+
+   //Converto la data
+   const date = convertDate(item.date);
+
+   const post = `
+   <div class="post">
+       <div class="post__header">
+         <div class="post-meta">
+           <div class="post-meta__icon">
+           ${profilePicture}
+           </div>
+           <div class="post-meta__data">
+             <div class="post-meta__author">${item.name}</div>
+             <div class="post-meta__time">${date}</div>
+           </div>
+         </div>
+       </div>
+       <div class="post__text">
+         ${item.content}
+       </div>
+       <div class="post__image">
+         ${picture}
+       </div>
+       <div class="post__footer">
+         <div class="likes js-likes">
+           <div class="likes__cta">
+             <button class="like-button js-like-button" href="#" data-postid="1">
+               <i class="like-button__icon fas fa-thumbs-up" aria-hidden="true"></i>
+               <span class="like-button__label">Mi Piace</span>
+             </button>
+           </div>
+           <div class="likes__counter">Piace a <b id="like-counter-${item.id}" class="js-likes-counter">${item.likes}</b> persone</div>
+         </div>
+       </div>
+     </div>
+   `;
+  return post
+}
+
+
+//Funzione per aggiungere il post nella pagina
+
+const addPosts = array => {
+
+   let posts = ''
+   array.forEach((post) => {
+       posts += createPost(post);
+   });
+
+   return posts
+}
+
+//Stampo
+targetPostList.innerHTML = addPosts(posts);
+
+//Event Listener
+likeButtons.forEach( (button, i) => {
+   button.addEventListener('click', () => {
+       //Toggle 
+       button.classList.toggle('like-button--liked');
+       
+       //Incremento like button
+       if (button.classList.contains('like-button--liked')){
+           posts[i].likes++;
+       } else {
+           posts[i].likes--; 
+       }
+       
+       const likeTarget = document.getElementById(`like-counter-${i+1}`);
+       likeTarget.innerText = posts[i].likes;
+   })
+});
